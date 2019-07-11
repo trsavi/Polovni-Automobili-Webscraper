@@ -53,50 +53,37 @@ def get_cars(brand, model):
 	url ='https://www.polovniautomobili.com/auto-oglasi/pretraga?brand=' + brand + '&model[]=' + model
 
 	#soup = parse_page(url)
-	"""
-	for i in range(1,20):
-		soup = parse_page(url+'&page='+i)
-		pages = soup.findAll('article')
-
-		for page in pages:
-			try:
-				link = page.find('h2')
-
-	"""
-	soup = parse_page(url)
-	pages = soup.findAll('article')
-	#title = soup.findAll(class_="ga-title")
-	"""
-	for t in title:
-		t = t.get('title')
-		print(t)
-	"""
-	for page in pages:
-		#print(page)
-		print("")
-		pageT = page.find('a')
-		#print(pageT)
-
-		title = pageT.get('title')
-		print(title)
-		
-		discount = page.find(class_='price price-discount')
-		#print(discount.get_text())
-		if discount!=None:
-			pass
-			print(discount.get_text())
-		else:
-			price = page.find(class_='price')
-			print(price.get_text())
-		content = page.findAll(class_='inline-block')
-		for con in content:
-			print(con.get_text())
-
 	
-	#print(content)
+	for i in range(1,20):
+		#print('page='+str(i))
+		print("")
+		soup = parse_page(url+'&page='+str(i))
+		pages = soup.findAll('article')
+		for page in pages:
+				#print(page)
+			pageT = page.find('a')
+			#print(pageT)
+			try:
+				title = pageT.get('title')
+				if title==None:
+					pass
+				else:
+					print(title)
+					discount = page.find(class_='price price-discount')
+					#print(discount.get_text())
+					if discount!=None:
+						print(discount.get_text())
+					else:
+						price = page.find(class_='price')
+						print(price.get_text())
+					content = page.findAll(class_='inline-block')
+					for con in content:
+						print(con.get_text())
+			except:
+				pass
 
 
-get_cars('Alfa Romeo','75')
+get_cars('bmw','x1')
 
 
 #brands = all_Brands()
