@@ -54,7 +54,7 @@ def get_cars(brand, model):
 
 	#soup = parse_page(url)
 	
-	for i in range(1,20):
+	for i in range(1,6):
 		#print('page='+str(i))
 		print("")
 		soup = parse_page(url+'&page='+str(i))
@@ -68,17 +68,32 @@ def get_cars(brand, model):
 				if title==None:
 					pass
 				else:
-					print(title)
+					#print(title)
 					discount = page.find(class_='price price-discount')
 					#print(discount.get_text())
 					if discount!=None:
-						print(discount.get_text())
+						#print(discount.get_text())
+						continue
 					else:
 						price = page.find(class_='price')
-						print(price.get_text())
+						price = price.get_text()
 					content = page.findAll(class_='inline-block')
+					blocks = []
 					for con in content:
-						print(con.get_text())
+						blocks.append(con.get_text())
+					dictionary = {
+							'Auto': title,
+							'Cena': price,
+							'Godiste': blocks[0][:-2],
+							'Kilometraza':blocks[1][:-2],
+							'Gorivo':blocks[2][:-2],
+							'Kubikaza':blocks[3],
+							'Karoserija':blocks[4],
+							'Snaga':blocks[5]
+					}
+
+					return(dictionary)
+
 			except:
 				pass
 
