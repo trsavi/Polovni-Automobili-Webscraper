@@ -4,15 +4,28 @@ import requests
 import urllib.request
 from bs4 import BeautifulSoup as bs
 import mysql.connector
-"""
-mydb = mysql.connector.connect(
-	host='localhost',
-	user='root',
-	passwd=''
-)
-"""
-#print(mydb)
 
+
+def createDB():
+
+	mydb = mysql.connector.connect(
+		host='localhost',
+		user='root',
+		passwd='',
+		database='polovniAutomobili'
+	)
+	#database='testDB'
+
+	mycursor = mydb.cursor()
+
+	mycursor.execute("CREATE DATABASE polovniAutomobili")
+	mycursor.execute("SHOW DATABASES")
+	# to check if database has been created
+	for db in mycursor:
+		print(db)
+
+
+# parse through page using BeautifulSoup
 def parse_page(url):
 	try:
 		r = requests.get(url)
@@ -53,8 +66,9 @@ def get_cars(brand, model):
 	url ='https://www.polovniautomobili.com/auto-oglasi/pretraga?brand=' + brand + '&model[]=' + model
 
 	#soup = parse_page(url)
-	
-	for i in range(1,6):
+	carList = []
+	# loop over number of pages
+	for i in range(1,2):
 		#print('page='+str(i))
 		print("")
 		soup = parse_page(url+'&page='+str(i))
@@ -81,25 +95,55 @@ def get_cars(brand, model):
 					blocks = []
 					for con in content:
 						blocks.append(con.get_text())
+					god = int(blocks[0][:4])
+					km = blocks[1].replace('.','')
+					km = km.replace(' km |', '')
+					km = int(km)
+					gor = blocks[2][:-2]
+					kub = int(blocks[3][:4])
+					kar = blocks[4].replace(',','')
+					sn = blocks[5].replace(', ','')
 					dictionary = {
-							'Auto': title,
-							'Cena': price,
-							'Godiste': blocks[0][:-2],
-							'Kilometraza':blocks[1][:-2],
-							'Gorivo':blocks[2][:-2],
-							'Kubikaza':blocks[3],
-							'Karoserija':blocks[4],
-							'Snaga':blocks[5]
+							'Brend': (brand.replace('-', ' ')).upper(),
+							'Model': (model.replace('-', ' ')).upper(),
+							'Naziv': title,
+							'Cena': int(price[:-2].replace('.','')),
+							'Godiste': god,
+							'Kilometraza':km,
+							'Gorivo':gor,
+							'Kubikaza':kub,
+							'Karoserija':kar,
+							'Snaga': sn
 					}
-
-					return(dictionary)
+					carList.append(dictionary)
 
 			except:
 				pass
+	return carList
 
 
-get_cars('bmw','x1')
+#def more_detail(brand, model):
 
+# function that inserts cars into database
+def insertDB():
+	mydb = mysql.connector.connect(
+		host='localhost',
+		user='root',
+		passwd='',
+		database='polovniAutomobili'
+	)
+
+	mycursor = mydb.cursor()
+
+	mycursor.execute("CREATE TABLE Cars (brend VARCHAR(255), model VARCHAR(255), naziv VARCHAR(255), price INT(10)")
+
+
+
+
+print(get_cars('bmw','x1'))
+
+
+#createDB();
 
 #brands = all_Brands()
 """
