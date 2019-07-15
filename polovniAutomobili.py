@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup as bs
 import mysql.connector
 
 
+# function that creates database on local server
 def createDB():
 
 	mydb = mysql.connector.connect(
@@ -18,8 +19,9 @@ def createDB():
 	mycursor = mydb.cursor()
 
 	mycursor.execute("CREATE DATABASE polovniAutomobili")
+
+	# check if database exists
 	#mycursor.execute("SHOW DATABASES")
-	# to check if database has been created
 	#for db in mycursor:
 	#	print(db)
 
@@ -59,7 +61,7 @@ def all_Brands():
 
 	return brands_list[1:]
 
-
+# function that replaces characters in string
 def replace(string):
 	string = string.replace('š','s')
 	string = string.replace('Š','s')
@@ -70,6 +72,7 @@ def replace(string):
 	string = string.replace('č','c')
 	string = string.replace('Č','c')
 	return string
+
 # get all cars from one brand and model
 def get_cars(brand, model):
 
@@ -93,6 +96,7 @@ def get_cars(brand, model):
 				pageT = page.find('a')
 				try:
 					title = pageT.get('title')
+					link = pageT.get('href')
 					if title==None:
 						pass
 					else:
@@ -131,8 +135,10 @@ def get_cars(brand, model):
 									'Gorivo':gor,
 									'Kubikaza':kub,
 									'Karoserija':kar,
-									'Snaga': sn
+									'Snaga': sn,
+									'Link': link
 							}
+							# append every car to list as dictionary
 							carList.append(dictionary)
 
 						except:
@@ -143,8 +149,6 @@ def get_cars(brand, model):
 					pass
 	return carList
 
-
-#def more_detail(brand, model):
 
 # function that inserts cars into database
 def insertDBAll():
@@ -157,11 +161,11 @@ def insertDBAll():
 
 	mycursor = mydb.cursor()
 
-	#drop = 'DROP TABLE Cars'
+	drop = 'DROP TABLE Cars'
 
-	#mycursor.execute(drop)
+	mycursor.execute(drop)
 
-	#mycursor.execute("CREATE TABLE Cars (brend VARCHAR(255), model VARCHAR(255), naziv VARCHAR(255), cena INT(10), godiste INT(10), kilometraza INT(10), gorivo VARCHAR(255), kubikaza INT(10), karoserija VARCHAR(255) ,snaga VARCHAR(255))")
+	mycursor.execute("CREATE TABLE Cars (brend VARCHAR(255), model VARCHAR(255), naziv VARCHAR(255), cena INT(10), godiste INT(10), kilometraza INT(10), gorivo VARCHAR(255), kubikaza INT(10), karoserija VARCHAR(255) ,snaga VARCHAR(255))")
 
 	sqlInsert = "INSERT INTO Cars (brend, model, naziv, cena, godiste, kilometraza, gorivo, kubikaza, karoserija, snaga) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
@@ -195,9 +199,7 @@ def insertDBAll():
 		print(e)
 		pass
 
-
-
-#print(all_Brands())
-insertDBAll();
-#print(get_cars('bmw','x1'))
+# create database and then insert data
+#createDB()
+insertDBAll()
 print("Data inserted")
