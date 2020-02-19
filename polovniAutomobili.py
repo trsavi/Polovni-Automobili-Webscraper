@@ -122,6 +122,7 @@ def get_cars(brand, model):
 						kar = (blocks[4].replace(',',''))
 						kar = replace(kar)
 						sn = (blocks[5].replace(', ',''))
+						
 
 						try:
 							price = int(price[:-2].replace('.',''))
@@ -165,9 +166,14 @@ def insertDBAll():
 
 	mycursor.execute(drop)
 
-	mycursor.execute("CREATE TABLE Cars (brend VARCHAR(255), model VARCHAR(255), naziv VARCHAR(255), cena INT(10), godiste INT(10), kilometraza INT(10), gorivo VARCHAR(255), kubikaza INT(10), karoserija VARCHAR(255) ,snaga VARCHAR(255))")
+	mycursor.execute("CREATE TABLE Cars (brend VARCHAR(255), model VARCHAR(255)\
+	,naziv VARCHAR(255), cena INT(10), godiste INT(10), kilometraza INT(10)\
+	,gorivo VARCHAR(255), kubikaza INT(10), karoserija VARCHAR(255)\
+	,snaga VARCHAR(255))")
 
-	sqlInsert = "INSERT INTO Cars (brend, model, naziv, cena, godiste, kilometraza, gorivo, kubikaza, karoserija, snaga) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+	sqlInsert = "INSERT INTO Cars (brend, model, naziv, cena, godiste, kilometraza,\
+	 gorivo, kubikaza, karoserija, snaga) \
+	 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
 	# insert cars by brand and model
 	brands = all_Brands()
@@ -201,5 +207,5 @@ def insertDBAll():
 
 # create database and then insert data
 #createDB()
-insertDBAll()
+#insertDBAll()
 print("Data inserted")
